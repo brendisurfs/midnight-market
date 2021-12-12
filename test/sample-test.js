@@ -25,8 +25,8 @@ describe("NFTMarket", function () {
         const auctionPrice = ethers.utils.parseUnits("100", "ether");
 
         // create a few tokens.
-        await nft.CreateToken("https://www.mytokenlocation.com");
-        await nft.CreateToken("https://www.mytokenlocation2.com");
+        await nft.createToken("https://www.mytokenlocation.com");
+        await nft.createToken("https://www.mytokenlocation2.com");
 
         // list the tokens next.
         await nftMarket.createMarketItem(nftContractAddr, 1, auctionPrice, {
@@ -45,7 +45,26 @@ describe("NFTMarket", function () {
             .createMarketSale(nftContractAddr, 1, { value: auctionPrice });
 
         // we can query the items as well.
-        const items = await nftMarket.fetchMarketItems();
+        let items = await nftMarket.fetchMarketItems();
+
+        // we want to map over all the items and update the value of them.
+        // lets use items.
+        // this should be asyncronous to not mess up the order.
+        items = await Promise.all(
+            items.map(async (i) => {
+                const tokenUri = await nft.tokenURI(i.tokenId);
+
+                let item = {
+                    price: i.price.toString(),
+                    tokenId: i.tokenId.toString(),
+                    seller: i.seller,
+                    owner: i.owner,
+                    tokenUri,
+                };
+                return item;
+            })
+        );
+
         console.log("items: ", items);
     });
 });
