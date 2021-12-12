@@ -22,9 +22,7 @@ const client = ipfsCreate({
     host: "ipfs.infura.io",
     port: 5001,
     protocol: "https",
-    headers: {
-        authorization: "auth",
-    },
+    headers: {},
 });
 
 const CreatePage = () => {
@@ -72,7 +70,7 @@ const CreatePage = () => {
         // we want the third value from the args.
         let value = events.args[2];
         let tokenId = value.toNumber();
-        const price = ethers.utils.parseUnits(String(formInput.price), "ether");
+        const price = ethers.utils.parseUnits(formInput.price, "ether");
 
         contract = new ethers.Contract(marketaddr, Market.abi, signer);
 
@@ -120,7 +118,7 @@ const CreatePage = () => {
                     <input
                         type="text"
                         placeholder="Asset Name"
-                        className="mt-8 border-b rounded p-4"
+                        className="mt-8 border-b p-4"
                         onChange={(e) =>
                             updateFormInput({
                                 ...formInput,
@@ -130,7 +128,7 @@ const CreatePage = () => {
                     />
                     <textarea
                         placeholder="Asset Description"
-                        className="mt-8 border-b rounded p-4"
+                        className="mt-8 border-b  p-4"
                         onChange={(e) =>
                             updateFormInput({
                                 ...formInput,
@@ -140,9 +138,9 @@ const CreatePage = () => {
                     />
                     <div className="mt-8 border-b flex flex-row items-center justify-between">
                         <input
-                            type="number"
+                            type="text"
                             placeholder="Asset Price"
-                            className="rounded p-4 w-full"
+                            className=" p-4 w-full"
                             onChange={(e) =>
                                 updateFormInput({
                                     ...formInput,
@@ -153,13 +151,7 @@ const CreatePage = () => {
                         <h3 className="text-right p-2">ETH</h3>
                     </div>
                     {/* FILE SECTION */}
-                    <input
-                        type="file"
-                        placeholder="Asset File"
-                        name="Asset"
-                        className="my-4 "
-                        onChange={onChange}
-                    />
+                    <input type="file" placeholder="Asset File" name="Asset" className="my-4 " onChange={onChange} />
                     {/* loading bar */}
                     <div className="progress h-3 relative  rounded-full overflow-hidden">
                         <div className="w-full h-full bg-gray-200 absolute"></div>
@@ -171,17 +163,11 @@ const CreatePage = () => {
                     </div>
                     {/* Preview file here */}
                     {fileUrl && (
-                        <img
-                            className="rounded mt-4"
-                            width="350"
-                            src={fileUrl}
-                            alt=""
-                        />
+                        <div className="flex justify-center">
+                            <img className="rounded mt-4 " width="350" src={fileUrl} alt="" />
+                        </div>
                     )}
-                    <button
-                        onClick={createMarket}
-                        className="font-bold mt-4 bg-indigo-500 text-white p-4 shadow-lg"
-                    >
+                    <button onClick={createMarket} className="font-bold mt-4 bg-indigo-500 text-white p-4 shadow-lg">
                         Create Asset
                     </button>
                 </div>

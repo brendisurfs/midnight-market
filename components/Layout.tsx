@@ -7,7 +7,7 @@ const Layout = ({ children }: any) => {
         <>
             <nav className="border-b p-6">
                 <h2 className="brand text-4xl font-bold">This is a Marketplace</h2>
-                <div>
+                <div className="links py-2">
                     <Link href="/">
                         <a className="mr-6 text-indigo-600">Home</a>
                     </Link>
