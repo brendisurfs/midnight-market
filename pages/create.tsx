@@ -1,72 +1,56 @@
 import Layout from "../components/Layout";
-import { create as ipfsCreate, Options } from "ipfs-http-client";
+import { create as ipfsCreate } from "ipfs-http-client";
 import { useRouter } from "next/router";
 import React, { ChangeEvent, useState } from "react";
 import Web3Modal from "web3modal";
 import { ethers } from "ethers";
 
-import { iNftType } from "./index";
-
 interface formInputType {
-    name: string;
     price: string;
+    name: string;
     description: string;
 }
+
+let formValue: formInputType;
 
 // NFT refs
 import { nftaddr, marketaddr } from "../.config.js";
 import NFT from "../artifacts/contracts/NFT.sol/NFT.json";
 import Market from "../artifacts/contracts/NFTmarket.sol/NFTMarket.json";
 
-const ipfsOptions: Options = {
-    apiPath: "https://ipfs.infura.io:5001/api/v0",
-};
-const client = ipfsCreate(ipfsOptions);
+const client = ipfsCreate({
+    host: "ipfs.infura.io",
+    port: 5001,
+    protocol: "https",
+    headers: {
+        authorization: "auth",
+    },
+});
 
-const create = () => {
+const CreatePage = () => {
     const router = useRouter();
-    const [fileUrl, setFileUrl] = useState<string>("");
-    const [formInput, updateFormInput] = useState<any>();
+    const [fileUrl, setFileUrl] = useState("");
+    const [formInput, updateFormInput] = useState({ ...formValue });
+    const [loading, setLoading] = useState(0);
 
     // onChange - handles the change to the file upload.
     // |
     // v
-    async function onChange(e: React.ChangeEvent<HTMLInputElement>) {
+    async function onChange(e: ChangeEvent<HTMLInputElement>) {
         // check if there are any files, if not no need to continue.
-        if (!e.currentTarget.files) return;
-        const inputFile = e.currentTarget.files[0];
-
+        if (!e.target.files) {
+            console.log("no files found");
+            return;
+        }
+        const inputFile = e.target.files[0];
         try {
             let added = await client.add(inputFile, {
-                progress: (prog) => console.log(`received: ${prog}`),
+                progress: (prog) => {
+                    setLoading(Math.ceil((prog / inputFile.size) * 100));
+                },
             });
             let uploadedURL = `https://ipfs.infura.io/ipfs/${added.path}`;
             setFileUrl(uploadedURL);
-        } catch (error) {
-            console.log(error);
-        }
-    }
-
-    // createItem - lists the item on the market.
-    async function createItem() {
-        // let formName = formInput?.name;
-        // let formDesc = formInput?.description;
-        // let formPrice = formInput?.price;
-        // if (!formName || !formPrice || !formDesc || !fileUrl) return;
-
-        const { name, description, price } = formInput;
-        if (!name || !price || !description || !fileUrl) return;
-
-        let data = JSON.stringify({
-            name,
-            description,
-            image: fileUrl,
-        });
-
-        try {
-            let added = await client.add(data);
-            let addedURL = `https://ipfs.infura.io/ipfs/${added.path}`;
-            createSale(addedURL);
         } catch (error) {
             console.log("error uploading file: ", error);
         }
@@ -79,7 +63,7 @@ const create = () => {
         let provider = new ethers.providers.Web3Provider(conn);
         let signer = provider.getSigner();
 
-        // create a new contract addr.
+        /**Create the Item */
         let contract = new ethers.Contract(nftaddr, NFT.abi, signer);
         let transaction = await contract.createToken(url);
         let tx = await transaction.wait();
@@ -87,10 +71,9 @@ const create = () => {
         let events = tx.events[0];
         // we want the third value from the args.
         let value = events.args[2];
-        // need to convert it to a usable number.
         let tokenId = value.toNumber();
+        const price = ethers.utils.parseUnits(String(formInput.price), "ether");
 
-        const price = ethers.utils.parseUnits(formInput!.price, "ether");
         contract = new ethers.Contract(marketaddr, Market.abi, signer);
 
         let listingPrice = await contract.getListingPrice();
@@ -102,9 +85,32 @@ const create = () => {
         });
 
         await transaction.wait();
-
         // route the user back to the main page to see the nft.
         router.push("/");
+    }
+    // createItem - lists the item on the market.
+    async function createMarket() {
+        const { name, description, price } = formInput;
+        if (!name || !price || !description || !fileUrl) return;
+
+        // parse the data.
+        let data = JSON.stringify({
+            name,
+            description,
+            image: fileUrl,
+        });
+
+        try {
+            console.log("adding client data");
+            let added = await client.add(data);
+            let addedURL = `https://ipfs.infura.io/ipfs/${added.path}`;
+            // BUG
+            console.log("added url!");
+
+            createSale(addedURL);
+        } catch (error) {
+            console.log("error uploading file: ", error);
+        }
     }
 
     return (
@@ -114,7 +120,7 @@ const create = () => {
                     <input
                         type="text"
                         placeholder="Asset Name"
-                        className="mt-8 border rounded p-4"
+                        className="mt-8 border-b rounded p-4"
                         onChange={(e) =>
                             updateFormInput({
                                 ...formInput,
@@ -123,8 +129,8 @@ const create = () => {
                         }
                     />
                     <textarea
-                        placeholder="Asset Name"
-                        className="mt-8 border rounded p-4"
+                        placeholder="Asset Description"
+                        className="mt-8 border-b rounded p-4"
                         onChange={(e) =>
                             updateFormInput({
                                 ...formInput,
@@ -132,16 +138,21 @@ const create = () => {
                             })
                         }
                     />
-                    <input
-                        placeholder="Asset Price"
-                        className="mt-8 border rounded p-4"
-                        onChange={(e) =>
-                            updateFormInput({
-                                ...formInput,
-                                price: e.target.value,
-                            })
-                        }
-                    />
+                    <div className="mt-8 border-b flex flex-row items-center justify-between">
+                        <input
+                            type="number"
+                            placeholder="Asset Price"
+                            className="rounded p-4 w-full"
+                            onChange={(e) =>
+                                updateFormInput({
+                                    ...formInput,
+                                    price: e.target.value,
+                                })
+                            }
+                        />
+                        <h3 className="text-right p-2">ETH</h3>
+                    </div>
+                    {/* FILE SECTION */}
                     <input
                         type="file"
                         placeholder="Asset File"
@@ -149,6 +160,15 @@ const create = () => {
                         className="my-4 "
                         onChange={onChange}
                     />
+                    {/* loading bar */}
+                    <div className="progress h-3 relative  rounded-full overflow-hidden">
+                        <div className="w-full h-full bg-gray-200 absolute"></div>
+                        <div
+                            id="bar"
+                            className="transition-all ease-out duration-1000 h-full bg-green-500 relative w-0"
+                            style={{ width: `${loading}%` }}
+                        ></div>
+                    </div>
                     {/* Preview file here */}
                     {fileUrl && (
                         <img
@@ -159,7 +179,7 @@ const create = () => {
                         />
                     )}
                     <button
-                        onClick={createItem}
+                        onClick={createMarket}
                         className="font-bold mt-4 bg-indigo-500 text-white p-4 shadow-lg"
                     >
                         Create Asset
@@ -170,4 +190,4 @@ const create = () => {
     );
 };
 
-export default create;
+export default CreatePage;

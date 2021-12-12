@@ -34,25 +34,16 @@ const Home: NextPage = () => {
     async function loadNFTs() {
         const provider = new ethers.providers.JsonRpcProvider();
         const tokenContract = new ethers.Contract(nftaddr, NFT.abi, provider);
-        const marketContract = new ethers.Contract(
-            marketaddr,
-            Market.abi,
-            provider
-        );
+        const marketContract = new ethers.Contract(marketaddr, Market.abi, provider);
         // data from our market.
         const data = await marketContract.fetchMarketItems();
 
         // map over items, reset them.
         const items = await Promise.all(
             data.map(async (i: iNftType) => {
-                const tokenUri: string = await tokenContract.tokenUri(
-                    i.tokenId
-                );
+                const tokenUri = await tokenContract.tokenURI(i.tokenId);
                 const meta = await axios.get(tokenUri);
-                let price = ethers.utils.formatUnits(
-                    i.price.toString(),
-                    "ether"
-                );
+                let price = ethers.utils.formatUnits(i.price.toString(), "ether");
                 // structure our data and reseting it to our frontend.
                 let item = {
                     price,
@@ -78,15 +69,11 @@ const Home: NextPage = () => {
         const signer = provider.getSigner();
         const contract = new ethers.Contract(marketaddr, Market.abi, signer);
         // next need a ref to the price.
-        const price = ethers.utils.parseUnits(nft.price.toString(), "ether");
+        const price = ethers.utils.parseUnits(String(nft.price), "ether");
 
-        const transaction = await contract.createmarketSale(
-            nftaddr,
-            nft.tokenId,
-            {
-                value: price,
-            }
-        );
+        const transaction = await contract.createmarketSale(nftaddr, nft.tokenId, {
+            value: price,
+        });
         // we want to wait maybe to reload the page.
         await transaction.wait();
         loadNFTs();
@@ -96,9 +83,7 @@ const Home: NextPage = () => {
         <>
             {loadingState === "loaded" && !nfts.length ? (
                 <Layout>
-                    <h1 className="px-20 py-10 text-3xl">
-                        no items in marketplace
-                    </h1>
+                    <h1 className="px-20 py-10 text-3xl">no items in marketplace</h1>
                 </Layout>
             ) : (
                 <Layout>
@@ -106,16 +91,10 @@ const Home: NextPage = () => {
                         <div className="px-4" style={{ maxWidth: "1600px" }}>
                             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 pt-4">
                                 {nfts.map((nft: iNftType, i: number) => {
-                                    <div
-                                        key={i}
-                                        className="border shadow rounded-xl overflow-hidden"
-                                    >
+                                    <div key={i} className="border shadow rounded-xl overflow-hidden">
                                         <img src={nft.image} alt="nft image" />
                                         <section className="p-4">
-                                            <div
-                                                style={{ height: "64px" }}
-                                                className="text-2xl font-semibold"
-                                            >
+                                            <div style={{ height: "64px" }} className="text-2xl font-semibold">
                                                 {nft.name}
                                             </div>
                                             <div
@@ -125,9 +104,7 @@ const Home: NextPage = () => {
                                                     overflow: "hidden",
                                                 }}
                                             >
-                                                <p className="text-gray-400">
-                                                    {nft.description}
-                                                </p>
+                                                <p className="text-gray-400">{nft.description}</p>
                                             </div>
                                         </section>
                                         <div className="price-section bg-black">

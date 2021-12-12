@@ -6,9 +6,7 @@ const Layout = ({ children }: any) => {
     return (
         <>
             <nav className="border-b p-6">
-                <h2 className="brand text-4xl font-bold">
-                    This is a Marketplace
-                </h2>
+                <h2 className="brand text-4xl font-bold">This is a Marketplace</h2>
                 <div>
                     <Link href="/">
                         <a className="mr-6 text-indigo-600">Home</a>
@@ -20,9 +18,7 @@ const Layout = ({ children }: any) => {
                         <a className="mr-6 text-indigo-600">My Assets</a>
                     </Link>
                     <Link href="/my-assets">
-                        <a className="mr-6 text-indigo-600">
-                            Creator Dashboard
-                        </a>
+                        <a className="mr-6 text-indigo-600">Creator Dashboard</a>
                     </Link>
                 </div>
             </nav>
