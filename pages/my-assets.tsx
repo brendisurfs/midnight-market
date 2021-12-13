@@ -11,6 +11,7 @@ import Layout from "../components/Layout";
 import { useEffect } from "react";
 import { iNftType } from "./index";
 import axios from "axios";
+import Image from "next/image";
 
 const MyAssets = () => {
     const [nfts, setNFTs] = useState<any[]>([]);
@@ -59,7 +60,7 @@ const MyAssets = () => {
                 <div className="flex justify-center px-2" style={{ maxWidth: "1600px" }}>
                     {nfts.map((nft: iNftType) => (
                         <div key={nft.price} className="border shadow overflow-hidden">
-                            <img width="256" src={nft.image} alt="nft image" />
+                            <Image width="256" height="256" src={nft.image} alt="nft image" />
                             <div className="price-section p-4 bg-black text-white flex justify-around">
                                 <p className="text-xl font-thin text-center  justify-between "> Price :</p>
                                 <p className="font-semibold text-lg border-b">{nft.price} ETH</p>
