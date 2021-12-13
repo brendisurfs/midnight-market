@@ -17,7 +17,7 @@ const Layout = ({ children }: any) => {
                     <Link href="/my-assets">
                         <a className="mr-6 text-indigo-600">My Assets</a>
                     </Link>
-                    <Link href="/my-assets">
+                    <Link href="/creator-dashboard">
                         <a className="mr-6 text-indigo-600">Creator Dashboard</a>
                     </Link>
                 </div>
