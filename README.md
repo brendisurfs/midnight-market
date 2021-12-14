@@ -1,8 +1,23 @@
-# Basic Sample Hardhat Project
+# MIDNIGHT MARKET
 
-This project demonstrates a basic Hardhat use case. It comes with a sample contract, a test for that contract, a sample script that deploys that contract, and an example of a task implementation, which simply lists the available accounts.
+## an NFT marketplace, for all you midnight folks.
 
-Try running some of the following tasks:
+This is a long term project I am working on. It is a demo concept for an NFT marketplace, that integrates some really fun technology and concepts.
+I will be adding support for real business interactions, with the end goal being a fully functioning, whitelist only NFT market.
+
+### If you really want to test this.
+
+You will need Hardhat installed.
+
+Personal suggestion:
+
+1. [download volta]("https://volta.sh/")
+
+2. `volta install hardhat`
+
+Next, you would clone this repo, cd into it, and yarn.
+
+### Using Hardhat
 
 ```shell
 npx hardhat accounts
