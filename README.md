@@ -11,7 +11,7 @@ You will need Hardhat installed.
 
 Personal suggestion:
 
-1. [download volta]("https://volta.sh/")
+1. [ download volta ]("https://volta.sh/")
 
 2. `volta install hardhat`
 
