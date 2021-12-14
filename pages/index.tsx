@@ -27,13 +27,16 @@ import Link from "next/link";
 import PageSubComponent from "../components/PageSubtitle";
 
 const Home: NextPage = () => {
+    // NFT states.
     const [nfts, setNFTs] = useState<iNftType[]>([]);
     const [loadingState, setLoadingState] = useState("not-loaded");
 
+    // load NFTs when loading the page.
     useEffect(() => {
         loadNFTs();
     }, []);
 
+    // loadNFTs -> loads all the nfts on the marketplace.
     async function loadNFTs() {
         const provider = new ethers.providers.JsonRpcProvider();
         const tokenContract = new ethers.Contract(nftaddr, NFT.abi, provider);
@@ -59,7 +62,6 @@ const Home: NextPage = () => {
                     name: meta.data.name,
                     description: meta.data.description,
                 };
-                console.log(item);
                 return item;
             })
         );
@@ -67,6 +69,7 @@ const Home: NextPage = () => {
         setNFTs(items);
     }
 
+    // buyNFT - executes instructions to connect to the web3modal (metamask), and add the nft to the wallet.
     async function buyNFT(nft: iNftType) {
         const web3Modal = new Web3Modal();
         const conn = await web3Modal.connect();
@@ -84,6 +87,7 @@ const Home: NextPage = () => {
         loadNFTs();
     }
 
+    // ------------------------TSX--------------------------------------------------------------------------------
     return (
         <>
             <Layout>

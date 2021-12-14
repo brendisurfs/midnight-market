@@ -35,9 +35,9 @@ const MyAssets = () => {
 
         let items = await Promise.all(
             data.map(async (i: iNftType) => {
-                let tokenURI = await tokenContract.tokenURI(i.tokenId);
-                let metadata = await axios.get(tokenURI);
-                let price = ethers.utils.formatUnits(i.price.toString(), "ether");
+                let tokenUri = await tokenContract.tokenURI(i.tokenId);
+                let metadata = await axios.get(tokenUri);
+                let price = ethers.utils.formatUnits(i.price, "ether");
 
                 let item = {
                     price,
@@ -49,7 +49,6 @@ const MyAssets = () => {
                 return item;
             })
         );
-
         setLoading("loaded");
         setNFTs(items);
     }

@@ -40,9 +40,7 @@ describe("NFTMarket", function () {
         const [_, buyerAddress] = await ethers.getSigners();
 
         // connect to the marketplace and sell.
-        await nftMarket
-            .connect(buyerAddress)
-            .createMarketSale(nftContractAddr, 1, { value: auctionPrice });
+        await nftMarket.connect(buyerAddress).createMarketSale(nftContractAddr, 1, { value: auctionPrice });
 
         // we can query the items as well.
         let items = await nftMarket.fetchMarketItems();
