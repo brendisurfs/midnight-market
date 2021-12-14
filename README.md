@@ -2,8 +2,7 @@
 
 ## an NFT marketplace, for all you midnight folks.
 
-#### word of caution: if you test this, make sure you import a new account into your Metamask wallet from Hardhat. Dont use your main account. 
-
+#### word of caution: if you test this, make sure you import a new account into your Metamask wallet from Hardhat. Dont use your main account.
 
 This is a long term project I am working on. It is a demo concept for an NFT marketplace, that integrates some really fun technology and concepts.
 I will be adding support for real business interactions, with the end goal being a fully functioning, whitelist only NFT market.
@@ -12,7 +11,7 @@ I will be adding support for real business interactions, with the end goal being
 
 You will need Hardhat installed.
 
-Personal suggestion:!
+Personal suggestion:
 
 1. ![ download volta ]("https://volta.sh/")
 
@@ -31,4 +30,5 @@ npx hardhat node
 node scripts/sample-script.js
 npx hardhat help
 ```
+
 ![midnightmarketdemo](https://user-images.githubusercontent.com/64713032/145914544-1dd28b3f-7db4-44cd-9230-e543d134b10b.png)
