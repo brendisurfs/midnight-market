@@ -2,6 +2,9 @@
 
 ## an NFT marketplace, for all you midnight folks.
 
+#### word of caution: if you test this, make sure you import a new account into your Metamask wallet from Hardhat. Dont use your main account. 
+
+
 This is a long term project I am working on. It is a demo concept for an NFT marketplace, that integrates some really fun technology and concepts.
 I will be adding support for real business interactions, with the end goal being a fully functioning, whitelist only NFT market.
 
