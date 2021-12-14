@@ -3,7 +3,9 @@ import Web3Modal from "web3modal";
 import { ethers } from "ethers";
 
 // NFT info
-import { nftaddr, marketaddr } from "../.config.js";
+const nftaddr = process.env.nftAddr!;
+const marketaddr = process.env.marketAddr!;
+
 import NFT from "../artifacts/contracts/NFT.sol/NFT.json";
 import Market from "../artifacts/contracts/NFTmarket.sol/NFTMarket.json";
 
@@ -12,6 +14,7 @@ import { useEffect } from "react";
 import { iNftType } from "./index";
 import axios from "axios";
 import Image from "next/image";
+import PageSubComponent from "../components/PageSubtitle";
 
 const MyAssets = () => {
     const [nfts, setNFTs] = useState<any[]>([]);
@@ -49,13 +52,19 @@ const MyAssets = () => {
 
         setLoading("loaded");
         setNFTs(items);
-        console.log(nfts);
     }
 
     return (
         <Layout>
+            <PageSubComponent pageTitle="My NFTs" pageInfo="This is where you can view your NFTs" />
             {loading === "loaded" && !nfts.length ? (
-                <div>no nfts.</div>
+                <div>
+                    <div className="flex flex-col justify-center items-center">
+                        <div>no nfts.</div>
+                        <hr />
+                        <p>Want to buy some?</p>
+                    </div>
+                </div>
             ) : (
                 <div className="flex justify-center px-2" style={{ maxWidth: "1600px" }}>
                     {nfts.map((nft: iNftType) => (

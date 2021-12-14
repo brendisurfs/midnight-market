@@ -5,8 +5,6 @@ import Web3Modal from "web3modal";
 import { ethers } from "ethers";
 import axios from "axios";
 
-import { nftaddr, marketaddr } from "../.config.js";
-
 export interface iNftType {
     price: string;
     tokenId: number;
@@ -20,8 +18,13 @@ export interface iNftType {
 // we will need a ref to our market addr and wallet addr.
 // we will also need our ABIs. This is the json rep of our contract.
 // |
+const nftaddr = process.env.nftAddr!;
+const marketaddr = process.env.marketAddr!;
 import NFT from "../artifacts/contracts/NFT.sol/NFT.json";
 import Market from "../artifacts/contracts/NFTmarket.sol/NFTMarket.json";
+import Image from "next/image";
+import Link from "next/link";
+import PageSubComponent from "../components/PageSubtitle";
 
 const Home: NextPage = () => {
     const [nfts, setNFTs] = useState<iNftType[]>([]);
@@ -84,8 +87,17 @@ const Home: NextPage = () => {
     return (
         <>
             <Layout>
+                <PageSubComponent pageTitle="Market" pageInfo="This is going to be very, very interesting." />
                 {loadingState === "loaded" && !nfts.length ? (
-                    <h1 className="px-20 py-10 text-3xl">no items in marketplace</h1>
+                    <div className=" p-10  flex items-center justify-center flex-col">
+                        <p className="font-semibold text-3xl mb-4">no items in marketplace</p>
+                        <div className=" flex flex-row ">
+                            but you can{" "}
+                            <Link passHref href="/create">
+                                <p className="text-blue-600 mx-2 border-b"> add some!</p>
+                            </Link>
+                        </div>
+                    </div>
                 ) : (
                     <div className=" content flex justify-center">
                         <div className="px-4" style={{ maxWidth: "1600px" }}>
@@ -93,7 +105,7 @@ const Home: NextPage = () => {
                                 {/* nfts map */}
                                 {nfts.map((nft: iNftType) => (
                                     <div key={nft.name} className="border shadow rounded-xl overflow-hidden">
-                                        <img src={nft.image} alt="nft image" />
+                                        <Image height={256} width={256} src={nft.image} alt="nft image" />
                                         <div className="p-4">
                                             <div style={{ height: "64px" }} className="text-2xl font-semibold">
                                                 {nft.name}

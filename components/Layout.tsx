@@ -1,30 +1,26 @@
 import { AppProps } from "next/app";
+import Image from "next/image";
 import Link from "next/link";
 import React, { Component } from "react";
+import SideMenuComponent from "./sideMenu";
 
 const Layout = ({ children }: any) => {
     return (
-        <>
-            <nav className="border-b p-6">
-                <h2 className="brand text-4xl font-bold">This is a Marketplace</h2>
-                <div className="links py-2">
-                    <Link href="/">
-                        <a className="mr-6 text-indigo-600">Home</a>
-                    </Link>
-                    <Link href="/create">
-                        <a className="mr-6 text-indigo-600">Create</a>
-                    </Link>
-                    <Link href="/my-assets">
-                        <a className="mr-6 text-indigo-600">My Assets</a>
-                    </Link>
-                    <Link href="/creator-dashboard">
-                        <a className="mr-6 text-indigo-600">Creator Dashboard</a>
+        <div className="h-screen" style={{ background: "#f4f4f4" }}>
+            <nav className="flex flex-row items-center justify-between border-b-2 border-gray-400 py-10  bg-black text-gray-200">
+                <div className="flex flex-row items-center px-2 ">
+                    <div className="px-2">
+                        <Image className="invert" src="/moon.svg" width="30" height="30" alt="" />
+                    </div>
+                    <Link passHref href="/">
+                        <a className="brand text-4xl font-semibold uppercase px-2">Midnight + Market</a>
                     </Link>
                 </div>
+                <SideMenuComponent />
             </nav>
 
             {children}
-        </>
+        </div>
     );
 };
 

@@ -66,10 +66,7 @@ contract NFTMarket is ReentrancyGuard {
         // 1. need a minimum price to list.
         require(price > 0, "Price must be at least 1000 wei");
         // 2. person must send the listing price along with the transaction
-        require(
-            msg.value == listingPrice,
-            "price must be equal to listing price."
-        );
+        require(msg.value == listingPrice, "price must be equal to listing price.");
 
         _itemIds.increment();
         uint256 itemId = _itemIds.current();
@@ -88,34 +85,19 @@ contract NFTMarket is ReentrancyGuard {
         // once the market item is created, transfer from the creator to the contract.
         IERC721(nftContract).transferFrom(msg.sender, address(this), tokenId);
 
-        emit MarketItemCreated(
-            itemId,
-            nftContract,
-            tokenId,
-            msg.sender,
-            address(0),
-            price,
-            false
-        );
+        emit MarketItemCreated(itemId, nftContract, tokenId, msg.sender, address(0), price, false);
     }
 
     // createMarketSale -
     // |
     // v
-    function createMarketSale(address nftContract, uint256 itemId)
-        public
-        payable
-        nonReentrant
-    {
+    function createMarketSale(address nftContract, uint256 itemId) public payable nonReentrant {
         // get a reference to price.
         uint256 price = idToMarketItem[itemId].price;
         // get ref to id.
         uint256 tokenId = idToMarketItem[itemId].tokenId;
 
-        require(
-            msg.value == price,
-            "please submit the asking price in order to complete the purchase."
-        );
+        require(msg.value == price, "please submit the asking price in order to complete the purchase.");
 
         //  if the requirement is met, transfer the value to the seller.
         idToMarketItem[itemId].seller.transfer(msg.value);

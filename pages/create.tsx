@@ -14,9 +14,13 @@ interface formInputType {
 let formValue: formInputType;
 
 // NFT refs
-import { nftaddr, marketaddr } from "../.config.js";
+const nftaddr = process.env.nftAddr!;
+const marketaddr = process.env.marketAddr!;
+
 import NFT from "../artifacts/contracts/NFT.sol/NFT.json";
 import Market from "../artifacts/contracts/NFTmarket.sol/NFTMarket.json";
+import Image from "next/image";
+import PageSubComponent from "../components/PageSubtitle";
 
 const client = ipfsCreate({
     host: "ipfs.infura.io",
@@ -64,9 +68,15 @@ const CreatePage = () => {
         /**Create the Item */
         let contract = new ethers.Contract(nftaddr, NFT.abi, signer);
         let transaction = await contract.createToken(url);
-        let tx = await transaction.wait();
 
+        let tx = await transaction.wait();
+        //
+        // BUG: Events is undefined here.
+        //
         let events = tx.events[0];
+        // NOTE: WHY IS THIS UNDEFINED?
+        console.log(events);
+
         // we want the third value from the args.
         let value = events.args[2];
         let tokenId = value.toNumber();
@@ -113,6 +123,7 @@ const CreatePage = () => {
 
     return (
         <Layout>
+            <PageSubComponent pageTitle="Mint an NFT" pageInfo="Show us what you are made of." />
             <div className="flex justify-center">
                 <div className=" flex flex-col pb-12 w-1/2">
                     <input
@@ -153,7 +164,7 @@ const CreatePage = () => {
                     {/* FILE SECTION */}
                     <input type="file" placeholder="Asset File" name="Asset" className="my-4 " onChange={onChange} />
                     {/* loading bar */}
-                    <div className="progress h-3 relative  rounded-full overflow-hidden">
+                    <div className="progress h-3 relative   overflow-hidden">
                         <div className="w-full h-full bg-gray-200 absolute"></div>
                         <div
                             id="bar"
@@ -164,11 +175,20 @@ const CreatePage = () => {
                     {/* Preview file here */}
                     {fileUrl && (
                         <div className="flex justify-center">
-                            <img className="rounded mt-4 " width="350" src={fileUrl} alt="" />
+                            <Image
+                                className="rounded mt-4 "
+                                width="350"
+                                height="350"
+                                src={fileUrl}
+                                alt="if you dont see a file here after you upload it, thats no good."
+                            />
                         </div>
                     )}
-                    <button onClick={createMarket} className="font-bold mt-4 bg-indigo-500 text-white p-4 shadow-lg">
-                        Create Asset
+                    <button
+                        onClick={createMarket}
+                        className="flex flex-row  bg-blue-700 text-white border-l-2 border-black my-4"
+                    >
+                        <p className="py-4 mt-4 p-4 font-thin">Create Asset</p>
                     </button>
                 </div>
             </div>
